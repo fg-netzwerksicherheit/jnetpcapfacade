@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="examples"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="jnetpcap/jnetpcap.jar" sourcepath="jnetpcap/jnetpcap-src-1.4.r1300-1.zip"/>
+	<classpathentry kind="lib" path="lib/apache-log4j-2.0-beta4-bin/log4j-api-2.0-beta4.jar" sourcepath="lib/apache-log4j-2.0-beta4-bin/log4j-api-2.0-beta4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/jNetPcapFacade/lib/apache-log4j-2.0-beta4-bin/log4j-api-2.0-beta4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/apache-log4j-2.0-beta4-bin/log4j-core-2.0-beta4.jar" sourcepath="lib/apache-log4j-2.0-beta4-bin/log4j-core-2.0-beta4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/jNetPcapFacade/lib/apache-log4j-2.0-beta4-bin/log4j-core-2.0-beta4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

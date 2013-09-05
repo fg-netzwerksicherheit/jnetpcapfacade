@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="dist" name="jNetPcapFacade">
+
+    <dirname property="jNetPcapFacade.basedir"
+             file="${ant.file.jNetPcapFacade}" />
+
+	
+    <!-- Properties -->
+    <property name="debuglevel" value="source,lines,vars" />
+    <property name="target" value="1.6" />
+    <property name="source" value="1.6" />
+
+    <property name="bin" value="build_bin" />
+    <property name="dist" value="dist" />
+	<property name="config" value="config" />
+    <property name="lib" value="lib" />
+	<property name="ssh" value="ssh" />
+    <property name="src" value="src" />
+    
+	<property name="test" value="test" />
+    <property name="test_bin" value="test_bin" />
+    <property name="test_out" value="test_out" />
+    <property name="test_summary" value="test_summary" />
+    <property name="test_tmp" value="test_tmp" />
+	<property name="jnetpcapfacade_jar" value="jNetPcapFacade.jar" />
+	
+	<property name="log4j_dir" value="apache-log4j-2.0-beta4-bin" />
+	
+	<!-- Deployment Properties -->
+	<property name="deployment_destination" value="netflowbot@netflowbot:/opt/netflowbot/deploy"/>
+	<property name="ssh.keyfile" value="${ssh}/netflowbot"/>
+	<property name="classloader_lib" value="${lib}/ant-classloadertask.jar"/>
+	<property name="jsch_lib" value="${lib}/jsch-0.1.49.jar"/>
+	
+	<taskdef resource="net/jtools/classloadertask/antlib.xml" classpath="${classloader_lib}"/>
+	
+    <!-- Paths -->
+    <path id="jNetPcapFacade.classpath">
+        <pathelement location="${jNetPcapFacade.basedir}/${bin}" />
+        <pathelement location="${jNetPcapFacade.basedir}/jnetpcap/jnetpcap.jar" />
+    	<pathelement location="${jNetPcapFacade.basedir}/${config}/" />
+    	<pathelement location="${jNetPcapFacade.basedir}/${lib}/${log4j_dir}/log4j-1.2-api-2.0-beta4.jar" />
+    	<pathelement location="${jNetPcapFacade.basedir}/${lib}/${log4j_dir}/log4j-api-2.0-beta4.jar" />
+    	<pathelement location="${jNetPcapFacade.basedir}/${lib}/${log4j_dir}/log4j-core-2.0-beta4.jar" />
+    </path>
+
+    <path id="jNetPcapFacadeTests.classpath">
+        <path refid="jNetPcapFacade.classpath" />
+        <pathelement location="${jNetPcapFacade.basedir}/${test_bin}" />
+        <pathelement location="${jNetPcapFacade.basedir}/${lib}/junit-4.8.2.jar" />
+    </path>
+
+
+    <!-- Targets -->
+    <!-- Build -->
+    <target name="clean">
+        <delete dir="${jNetPcapFacade.basedir}/${bin}" />
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${jNetPcapFacade.basedir}/${bin}" />
+    </target>
+
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}" />
+
+        <javac debug="true"
+               debuglevel="${debuglevel}"
+               destdir="${jNetPcapFacade.basedir}/${bin}"
+               source="${source}"
+               target="${target}"
+               includeantruntime="false">
+            <src path="${jNetPcapFacade.basedir}/${src}" />
+            <classpath refid="jNetPcapFacade.classpath" />
+        </javac>
+
+        <copy todir="${jNetPcapFacade.basedir}/${bin}">
+            <fileset dir="${jNetPcapFacade.basedir}/${src}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Tests -->
+    <target name="clean_tests">
+        <delete dir="${jNetPcapFacade.basedir}/${test_bin}" />
+        <delete dir="${jNetPcapFacade.basedir}/${test_out}" />
+        <delete dir="${jNetPcapFacade.basedir}/${test_summary}" />
+        <delete dir="${jNetPcapFacade.basedir}/${test_tmp}" />
+    </target>
+
+    <target name="init_tests" depends="clean_tests">
+        <mkdir dir="${jNetPcapFacade.basedir}/${test_bin}" />
+        <mkdir dir="${jNetPcapFacade.basedir}/${test_out}" />
+        <mkdir dir="${jNetPcapFacade.basedir}/${test_summary}" />
+        <mkdir dir="${jNetPcapFacade.basedir}/${test_tmp}" />
+    </target>
+
+    <target name="build_tests" depends="init_tests, build">
+        <echo message="${ant.project.name}: ${ant.file}" />
+
+        <javac debug="true"
+               debuglevel="${debuglevel}"
+               destdir="${jNetPcapFacade.basedir}/${test_bin}"
+               source="${source}"
+               target="${target}"
+               includeantruntime="false">
+            <src path="${jNetPcapFacade.basedir}/${test}" />
+            <classpath refid="jNetPcapFacadeTests.classpath" />
+        </javac>
+
+        <copy todir="${jNetPcapFacade.basedir}/${test_bin}">
+            <fileset dir="${jNetPcapFacade.basedir}/${test}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="run_tests" depends="build_tests">
+        <junit printsummary="yes"
+               haltonfailure="no"
+               failureproperty="junit.failure">
+            <classpath refid="jNetPcapFacadeTests.classpath" />
+            <batchtest fork="yes" todir="${jNetPcapFacade.basedir}/${test_out}">
+                <fileset dir="${jNetPcapFacade.basedir}/${test}/">
+                    <include name="**/*Test*.java" />
+                    <exclude name="**/TestConstants.java" />
+                </fileset>
+                <formatter type="xml" />
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${jNetPcapFacade.basedir}/${test_tmp}">
+            <fileset dir="${jNetPcapFacade.basedir}/${test_out}" />
+            <report todir="${jNetPcapFacade.basedir}/${test_summary}" />
+        </junitreport>
+
+        <chmod file="${jNetPcapFacade.basedir}/${test_summary}/**"
+               perm="644"
+               type="file" />
+        <chmod file="${jNetPcapFacade.basedir}/${test_summary}/**"
+               perm="755"
+               type="dir" />
+
+        <fail if="junit.failure"
+              message="Unit test(s) failed! See ${test_summary} for details." />
+    </target>
+
+    <!-- Dist -->
+    <target name="clean_dist">
+        <delete dir="${jNetPcapFacade.basedir}/${dist}" />
+    </target>
+
+    <target name="init_dist" depends="clean_dist">
+        <mkdir dir="${jNetPcapFacade.basedir}/${dist}" />
+    </target>
+
+    <target name="dist" depends="init_dist, build">
+        <echo message="${ant.project.name}: ${ant.file}" />
+
+        <manifestclasspath property="jNetPcapFacade.jar.classpath"
+                           jarfile="${jnetpcapfacade_jar}">
+            <classpath refid="jNetPcapFacade.classpath" />
+        </manifestclasspath>
+
+        <jar destfile="${jNetPcapFacade.basedir}/${dist}/${lib}/${jnetpcapfacade_jar}">
+            <manifest>
+                <attribute name="Class-Path"
+                           value="${jNetPcapFacade.jar.classpath}" />
+            </manifest>
+
+            <fileset dir="${jNetPcapFacade.basedir}/${bin}" />
+        </jar>
+
+        <mkdir dir="${jNetPcapFacade.basedir}/${dist}/${lib}" />
+        <copy todir="${jNetPcapFacade.basedir}/${dist}/${lib}">
+            <fileset dir="${jNetPcapFacade.basedir}">
+                <include name="jnetpcap/jnetpcap.jar" />
+                <include name="jnetpcap/native/**" />
+            </fileset>
+        </copy>
+        <chmod file="${jNetPcapFacade.basedir}/${dist}/**"
+               perm="644"
+               type="file" />
+        <chmod file="${jNetPcapFacade.basedir}/${dist}/**"
+               perm="755"
+               type="dir" />
+    </target>
+	
+	<!-- Ultimate Clean -->
+	<target name="mrproper" depends="clean, clean_tests, clean_dist">
+		
+		<echo message="Everthing cleaned in ${jNetPcapFacade.basedir} !"/>
+	</target>
+	
+	<!-- Deployment -> Schwachsinn für jNetPcapFacade !-->
+	<target name="deploy" depends="dist">
+		<classloader loader="system" classpath="${jsch_lib}"/>
+		<echo message="Deploying ${jNetPcapFacade.basedir}/${dist}/${lib}/${jnetpcapfacade_jar} file to ${deployment_destination}..."/>
+		<scp todir="${deployment_destination}" keyfile="${ssh.keyfile}" trust="yes" file="${jNetPcapFacade.basedir}/${dist}/${lib}/${jnetpcapfacade_jar}" />
+	</target>
+</project>

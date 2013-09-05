@@ -1,0 +1,26 @@
+<html xmlns:lxslt="http://xml.apache.org/xslt" xmlns:stringutils="xalan://org.apache.tools.ant.util.StringUtils">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Standard Output from StdoutPacketProcessorTests</title>
+</head>
+<body>
+<pre>22:49:27.872 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.util.NativeLibraryLoader - Loaded native library: /home/rc/repositories/work/src/jnetpcapfacade/jnetpcap/native/linux/amd64/libjnetpcap.so
+22:49:27.885 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.util.NativeLibraryLoader - Loaded native library: /home/rc/repositories/work/src/jnetpcapfacade/jnetpcap/native/linux/amd64/libjnetpcap-pcap100.so
+22:49:30.337 [Thread-2] DEBUG de.fhffm.jNetPcapFacade.sniffer.sniffer.PacketSniffer - Starting pcap loop
+22:49:30.439 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.QueueEater - Added processor: de.fhffm.jNetPcapFacade.sniffer.processor.StdoutPacketProcessor
+22:49:30.676 [Thread-3] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.StdoutPacketProcessor - Packet: EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:58519 DstPort:12345 ACK:false SYN:true FIN:false
+EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:58519 DstPort:12345 ACK:false SYN:true FIN:false
+22:49:30.727 [Thread-3] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.StdoutPacketProcessor - Packet: EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:12345 DstPort:58519 ACK:true SYN:true FIN:false
+EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:12345 DstPort:58519 ACK:true SYN:true FIN:false
+22:49:30.757 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.sniffer.PacketSniffer - Sniffer started...
+22:49:30.787 [Thread-2] DEBUG de.fhffm.jNetPcapFacade.sniffer.sniffer.PacketSniffer - Pcap loop terminated. Closing pcap.
+22:49:30.790 [Thread-3] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.StdoutPacketProcessor - Packet: EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:12345 DstPort:58519 ACK:true SYN:false FIN:true
+EthSrc:00:00:00:00:00:00 EthDst:00:00:00:00:00:00 Src:127.0.0.1 Dst:127.0.0.1 SrcPort:12345 DstPort:58519 ACK:true SYN:false FIN:true
+22:49:30.860 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.sniffer.PacketSniffer - Sniffer stopped
+22:49:30.861 [Thread-3] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.QueueEater - Interrupted while waiting for queue elements
+Server socket was closed.
+22:49:31.015 [main] DEBUG de.fhffm.jNetPcapFacade.sniffer.processor.QueueEater - Added processor: de.fhffm.jNetPcapFacade.sniffer.processor.StdoutPacketProcessor
+Server socket was closed.
+</pre>
+</body>
+</html>

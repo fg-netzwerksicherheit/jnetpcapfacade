@@ -4,5 +4,6 @@ before_install:
 script:
     - sudo ant run_tests
 jdk:
+    - openjdk6
     - openjdk7
     - oraclejdk7

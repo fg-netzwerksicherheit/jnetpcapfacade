@@ -1,7 +1,6 @@
 language: java
 before_install:
     - sudo apt-get install libpcap-dev -qq
-install: ant deps
 script:
     - sudo ant run_tests
 jdk:

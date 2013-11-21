@@ -18,7 +18,6 @@
 
 package de.fhffm.jNetPcapFacade.sniffer.sniffer;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jnetpcap.Pcap;
@@ -36,46 +35,53 @@ import de.fhffm.jNetPcapFacade.sniffer.util.PcapHelper;
  */
 public class PacketSniffer extends Thread {
 	private Logger log = LogManager.getLogger(PacketSniffer.class);
-    private final Pcap pcap;
-    private final PcapPacketHandler<Object> handler;
+	private final Pcap pcap;
+	private final PcapPacketHandler<Object> handler;
 
-    public PacketSniffer(Pcap pcap, PcapPacketHandler<Object> handler) {
-        this.pcap = pcap;
-        this.handler = handler;
-        // setDaemon(true);
-    }
+	public PacketSniffer(Pcap pcap, PcapPacketHandler<Object> handler) {
+		this.pcap = pcap;
+		this.handler = handler;
+		// setDaemon(true);
+	}
 
-    public synchronized void stopSniffer() {
-        if (isAlive()) {
-        	log.debug("Sniffer started...");
-            pcap.breakloop();
-            /*
-             * According to the jNetPcap docs the sniffer may process at least
-             * one more packet. This causes the sniffer to stay in loop until it
-             * got another packet. So we inject one dummy packet to force the
-             * sniffer to leave the loop. To make sure that this packet is not
-             * filtered we explicitly set a filter that accepts all packets.
-             */
-            PcapHelper.setFilter(pcap, "");
-            pcap.inject(new byte[] { 0 });
-            try {
-                wait();
-            } catch (InterruptedException e) {
-            	
-            }
-            log.debug("Sniffer stopped");
-        }
-    }
+	public synchronized void stopSniffer() {
+		if (isAlive()) {
+			log.debug("Stopping sniffer...");
+			pcap.breakloop();
+			/*
+			 * According to the jNetPcap docs the sniffer may process at least
+			 * one more packet. This causes the sniffer to stay in loop until it
+			 * got another packet. So we inject one dummy packet to force the
+			 * sniffer to leave the loop. To make sure that this packet is not
+			 * filtered we explicitly set a filter that accepts all packets.
+			 */
+			PcapHelper.setFilter(pcap, "");
+			pcap.inject(new byte[] { 0 });
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				/*
+				 * We usually expect the sniffer to shut down cleanly. However,
+				 * exceptions may occur and we need to report those even if they
+				 * are not critical.
+				 */
+				log.warn("Caught exception while waiting for sniffer to shut down: "
+						+ e.getMessage());
+				log.warn("This shouldn't be a critical situation.");
+			}
+			log.debug("Sniffer stopped");
+		}
+	}
 
-    @Override
-    public void run() {
-    	log.debug("Starting pcap loop");
-        pcap.loop(Pcap.LOOP_INFINITE, handler, null);
-        log.debug("Pcap loop terminated. Closing pcap.");
-        pcap.close();
-        synchronized (this) {
-            notify();
-        }
-    }
+	@Override
+	public void run() {
+		log.debug("Starting pcap loop");
+		pcap.loop(Pcap.LOOP_INFINITE, handler, null);
+		log.debug("Pcap loop terminated. Closing pcap.");
+		pcap.close();
+		synchronized (this) {
+			notify();
+		}
+	}
 
 }
